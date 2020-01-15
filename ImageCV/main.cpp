@@ -136,9 +136,9 @@ int blobDetect(Mat inputImg) {
     int blobValue = 0;
     
     //迭代轮数
-    int rounds;
+    int rounds = 3;
     
-    for (rounds = 0; rounds < 3; rounds++) {
+    for (int r = 0; r < rounds; r++) {
         
         //The detected keypoints. In the second variant of the method keypoints[i] is a set of keypoints detected in images[i] .
         vector<KeyPoint> keyPoints;
@@ -194,7 +194,6 @@ int findConnectedComponents(Mat inputImg) {
     int imgSize = inputImg.rows * inputImg.cols;
     vector<Vec3b> colors(nums);
     for(int i = 0; i < nums; i++ ) {
-        cout << stats.at<int>(i, cv::CC_STAT_AREA) << endl;
         if (stats.at<int>(i, cv::CC_STAT_AREA) > (imgSize / 2)) {
             //保留背景
             colors[i] = Vec3b(255, 255, 255);
