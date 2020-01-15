@@ -16,7 +16,7 @@ int findConnectedComponents(Mat inputImg);
 int main(){
     
     //输入图片
-    Mat inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/origin.jpg");
+    Mat inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/origin.jpg", IMREAD_COLOR);
     
     //k-means
     kmeans(inputImg);
