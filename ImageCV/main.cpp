@@ -10,8 +10,9 @@ using namespace std;
 using namespace cv;
 
 int kmeans(Mat inputImg);
-int blobDetect(Mat inputImg);
-int findConnectedComponents(Mat inputImg);
+int removeConnectedComponents(Mat inputImg);
+
+void debugShow(Mat img);
 
 int main(){
     
@@ -21,12 +22,9 @@ int main(){
     //k-means
     kmeans(inputImg);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/kmeans.jpg", inputImg);
-    //斑点检测
-    blobDetect(inputImg);
-    imwrite("/Users/xiecun/Documents/Graduation/data/Example/blobDetect.jpg", inputImg);
     //寻找连通区域
-    findConnectedComponents(inputImg);
-    imwrite("/Users/xiecun/Documents/Graduation/data/Example/findConnectedComponents.jpg", inputImg);
+    removeConnectedComponents(inputImg);
+    imwrite("/Users/xiecun/Documents/Graduation/data/Example/removeConnectedComponents.jpg", inputImg);
     return 0;
 }
 
@@ -115,60 +113,11 @@ int kmeans(Mat inputImg) {
             }
         }
     }
-    //imshow("kmeans result", inputImg);
-    //waitKey(1000);
+    
     return 1;
 }
 
-//斑点检测
-int blobDetect(Mat inputImg) {
-    //参数
-    SimpleBlobDetector::Params params;
-    
-    //By area. Extracted blobs have an area between minArea (inclusive) and maxArea (exclusive).
-    params.filterByArea = true;
-    params.minArea = 1;
-    params.maxArea = 100;
-    
-    Ptr<SimpleBlobDetector> detector = SimpleBlobDetector::create(params);
-    
-    //返回值
-    int blobValue = 0;
-    
-    //迭代轮数
-    int rounds = 3;
-    
-    for (int r = 0; r < rounds; r++) {
-        
-        //The detected keypoints. In the second variant of the method keypoints[i] is a set of keypoints detected in images[i] .
-        vector<KeyPoint> keyPoints;
-        
-        //Detects keypoints in an image (first variant) or image set (second variant).
-        detector -> detect(inputImg, keyPoints);
-        
-        int i;
-        for (i = 0; i < keyPoints.size(); i++) {
-            int j;
-            for (j = keyPoints[i].size / 2 + 1; j >= 0; j--) {
-                if (keyPoints[i].pt.y - j >= 0 && keyPoints[i].pt.x - j >= 0 && keyPoints[i].pt.y + j <= inputImg.rows && keyPoints[i].pt.x + j <= inputImg.cols) {
-                    //j为去除区域的半径
-                    int n, m;
-                    for (n = 0; n < j * 2; n++) {
-                        for (m = 0; m < j * 2; m++) {
-                            inputImg.at<Vec3b>(keyPoints[i].pt.y - j + n, keyPoints[i].pt.x - j + m) = Vec3b(255, 255, 255);
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        blobValue = (int)keyPoints.size();
-    }
-    //返回检测到的斑点数量
-    return blobValue;
-}
-
-int findConnectedComponents(Mat inputImg) {
+int removeConnectedComponents(Mat inputImg) {
     
     //灰度图
     Mat grayImg;
@@ -176,8 +125,10 @@ int findConnectedComponents(Mat inputImg) {
     //Converts an image from one color space to another.
     cvtColor(inputImg, grayImg, CV_BGR2GRAY);
     
-    //the 8-bit single-channel image to be labeled
-    Mat image = grayImg;
+    //颜色翻转
+    //以此得到各个连通域
+    Mat image;
+    threshold(grayImg, image, 0, 255, THRESH_BINARY_INV);
     
     //destination labeled image
     Mat labels;
@@ -191,17 +142,22 @@ int findConnectedComponents(Mat inputImg) {
     int nums = connectedComponentsWithStats(image, labels, stats, centroids);
     
     //原图像大小
-    int imgSize = inputImg.rows * inputImg.cols;
+    int statArea[nums];
+    for (int i = 0; i < nums; i++) {
+        statArea[i] = stats.at<int>(i, cv::CC_STAT_AREA);
+    }
+    //对连通域面积进行排序
+    sort(statArea, statArea + nums);
     vector<Vec3b> colors(nums);
     for(int i = 0; i < nums; i++ ) {
-        if (stats.at<int>(i, cv::CC_STAT_AREA) > (imgSize / 2)) {
+        if (stats.at<int>(i, cv::CC_STAT_AREA) == statArea[nums - 1]) {
             //保留背景
             colors[i] = Vec3b(255, 255, 255);
-        } else if (stats.at<int>(i, cv::CC_STAT_AREA) < 100) {
-            //去除小连通区域
-            colors[i] = Vec3b(0, 255, 0);
-        } else {
+        } else if (stats.at<int>(i, cv::CC_STAT_AREA) == statArea[nums - 2]) {
+            //保留核心区域
             colors[i] = Vec3b(0, 0, 0);
+        } else {
+            colors[i] = Vec3b(255, 255, 255);
         }
     }
     
@@ -214,4 +170,9 @@ int findConnectedComponents(Mat inputImg) {
     }
 
     return nums;
+}
+
+void debugShow(Mat img) {
+    imshow("DeBug", img);
+    waitKey(0);
 }
