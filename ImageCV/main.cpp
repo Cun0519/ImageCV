@@ -10,7 +10,7 @@ using namespace std;
 using namespace cv;
 
 int kmeans(Mat inputImg);
-int removeConnectedComponents(Mat inputImg);
+int removeConnectedComponents(Mat inputImg, int round);
 
 void debugShow(Mat img);
 
@@ -23,7 +23,8 @@ int main(){
     kmeans(inputImg);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/kmeans.jpg", inputImg);
     //寻找连通区域
-    removeConnectedComponents(inputImg);
+    removeConnectedComponents(inputImg, 0);
+    removeConnectedComponents(inputImg, 1);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/removeConnectedComponents.jpg", inputImg);
     return 0;
 }
@@ -117,7 +118,7 @@ int kmeans(Mat inputImg) {
     return 1;
 }
 
-int removeConnectedComponents(Mat inputImg) {
+int removeConnectedComponents(Mat inputImg, int round) {
     
     //灰度图
     Mat grayImg;
@@ -125,10 +126,14 @@ int removeConnectedComponents(Mat inputImg) {
     //Converts an image from one color space to another.
     cvtColor(inputImg, grayImg, CV_BGR2GRAY);
     
-    //颜色翻转
-    //以此得到各个连通域
     Mat image;
-    threshold(grayImg, image, 0, 255, THRESH_BINARY_INV);
+    if (round == 0) {
+        //颜色翻转
+        //以此得到各个连通域
+        threshold(grayImg, image, 0, 255, THRESH_BINARY_INV);
+    } else {
+        image = grayImg;
+    }
     
     //destination labeled image
     Mat labels;
@@ -148,16 +153,26 @@ int removeConnectedComponents(Mat inputImg) {
     }
     //对连通域面积进行排序
     sort(statArea, statArea + nums);
+    //背景区域
+    int backGroundSize = statArea[nums - 1];
+    //虹膜区域
+    int irisSize = statArea[nums - 2];
     vector<Vec3b> colors(nums);
     for(int i = 0; i < nums; i++ ) {
-        if (stats.at<int>(i, cv::CC_STAT_AREA) == statArea[nums - 1]) {
+        if (stats.at<int>(i, cv::CC_STAT_AREA) == backGroundSize) {
             //保留背景
             colors[i] = Vec3b(255, 255, 255);
-        } else if (stats.at<int>(i, cv::CC_STAT_AREA) == statArea[nums - 2]) {
+        } else if (stats.at<int>(i, cv::CC_STAT_AREA) == irisSize) {
             //保留核心区域
             colors[i] = Vec3b(0, 0, 0);
         } else {
-            colors[i] = Vec3b(255, 255, 255);
+            if (round == 0) {
+                //第一轮去除外围连通域
+                colors[i] = Vec3b(255, 255, 255);
+            } else {
+                //第二轮去除内部连通域
+                colors[i] = Vec3b(0, 0, 0);
+            }
         }
     }
     
