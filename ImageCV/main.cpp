@@ -10,7 +10,7 @@ using namespace std;
 using namespace cv;
 
 int kmeans(Mat inputImg);
-int removeConnectedComponents(Mat inputImg, int round);
+int removeConnectedComponents(Mat inputImg);
 
 void debugShow(Mat img);
 
@@ -22,9 +22,8 @@ int main(){
     //k-means
     kmeans(inputImg);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/kmeans.jpg", inputImg);
-    //寻找连通区域
-    removeConnectedComponents(inputImg, 0);
-    removeConnectedComponents(inputImg, 1);
+    //去除连通区域
+    removeConnectedComponents(inputImg);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/removeConnectedComponents.jpg", inputImg);
     return 0;
 }
@@ -96,8 +95,8 @@ int kmeans(Mat inputImg) {
     //显示图像分割结果
     //把样本数据点转换回去
     Scalar blackWhite[] = {
-        Scalar(0,0,0),
-        Scalar(255,255,255)
+        Scalar(255,255,255),
+        Scalar(0,0,0)
     };
     for (int row = 0; row < height; row++) {
         for (int col = 0; col < width; col++) {
@@ -118,7 +117,11 @@ int kmeans(Mat inputImg) {
     return 1;
 }
 
-int removeConnectedComponents(Mat inputImg, int round) {
+int removeConnectedComponents(Mat inputImg) {
+    
+    /*
+     第一轮去除虹膜外部连通域
+     */
     
     //灰度图
     Mat grayImg;
@@ -127,13 +130,7 @@ int removeConnectedComponents(Mat inputImg, int round) {
     cvtColor(inputImg, grayImg, CV_BGR2GRAY);
     
     Mat image;
-    if (round == 0) {
-        //颜色翻转
-        //以此得到各个连通域
-        threshold(grayImg, image, 0, 255, THRESH_BINARY_INV);
-    } else {
-        image = grayImg;
-    }
+    image = grayImg;
     
     //destination labeled image
     Mat labels;
@@ -144,47 +141,92 @@ int removeConnectedComponents(Mat inputImg, int round) {
     Mat centroids;
     
     //computes the connected components labeled image of boolean image and also produces a statistics output for each label
-    int nums = connectedComponentsWithStats(image, labels, stats, centroids);
+    int nums_0 = connectedComponentsWithStats(image, labels, stats, centroids);
     
     //原图像大小
-    int statArea[nums];
-    for (int i = 0; i < nums; i++) {
-        statArea[i] = stats.at<int>(i, cv::CC_STAT_AREA);
+    int statArea_0[nums_0];
+    for (int i = 0; i < nums_0; i++) {
+        statArea_0[i] = stats.at<int>(i, cv::CC_STAT_AREA);
     }
     //对连通域面积进行排序
-    sort(statArea, statArea + nums);
+    sort(statArea_0, statArea_0 + nums_0);
     //背景区域
-    int backGroundSize = statArea[nums - 1];
+    int backGroundSize = statArea_0[nums_0 - 1];
     //虹膜区域
-    int irisSize = statArea[nums - 2];
-    vector<Vec3b> colors(nums);
-    for(int i = 0; i < nums; i++ ) {
+    int irisSize = statArea_0[nums_0 - 2];
+    vector<Vec3b> colors_0(nums_0);
+    for(int i = 0; i < nums_0; i++ ) {
         if (stats.at<int>(i, cv::CC_STAT_AREA) == backGroundSize) {
             //保留背景
-            colors[i] = Vec3b(255, 255, 255);
+            colors_0[i] = Vec3b(0, 0, 0);
         } else if (stats.at<int>(i, cv::CC_STAT_AREA) == irisSize) {
             //保留核心区域
-            colors[i] = Vec3b(0, 0, 0);
+            colors_0[i] = Vec3b(255, 255, 255);
         } else {
-            if (round == 0) {
-                //第一轮去除外围连通域
-                colors[i] = Vec3b(255, 255, 255);
-            } else {
-                //第二轮去除内部连通域
-                colors[i] = Vec3b(0, 0, 0);
-            }
+            //第一轮去除外围连通域
+            colors_0[i] = Vec3b(0, 0, 0);
+            
         }
     }
     
     for( int y = 0; y < inputImg.rows; y++ ) {
         for( int x = 0; x < inputImg.cols; x++ ) {
             int label = labels.at<int>(y, x);
-            CV_Assert(0 <= label && label <= nums);
-            inputImg.at<Vec3b>(y, x) = colors[label];
+            CV_Assert(0 <= label && label <= nums_0);
+            inputImg.at<Vec3b>(y, x) = colors_0[label];
         }
     }
-
-    return nums;
+    
+    cout << "第一轮连通域： " << nums_0 << endl;
+    
+    /*
+    第二轮去除虹膜外部连通域
+    */
+    
+    //Converts an image from one color space to another.
+    cvtColor(inputImg, grayImg, CV_BGR2GRAY);
+    
+    threshold(grayImg, image, 0, 255, THRESH_BINARY_INV);
+    
+    int nums_1 = connectedComponentsWithStats(image, labels, stats, centroids);
+        
+    //原图像大小
+    int statArea_1[nums_1];
+    for (int i = 0; i < nums_1; i++) {
+        statArea_1[i] = stats.at<int>(i, cv::CC_STAT_AREA);
+    }
+    //对连通域面积进行排序
+    sort(statArea_1, statArea_1 + nums_1);
+    //背景区域
+    backGroundSize = statArea_1[nums_1 - 1];
+    //虹膜区域
+    irisSize = statArea_1[nums_1 - 2];
+    vector<Vec3b> colors_1(nums_1);
+    for(int i = 0; i < nums_1; i++ ) {
+        if (stats.at<int>(i, cv::CC_STAT_AREA) == backGroundSize) {
+            //保留背景
+            colors_1[i] = Vec3b(0, 0, 0);
+        } else if (stats.at<int>(i, cv::CC_STAT_AREA) == irisSize) {
+            //保留核心区域
+            colors_1[i] = Vec3b(255, 255, 255);
+        } else {
+            //第二轮去除内部连通域
+            colors_1[i] = Vec3b(255, 255, 255);
+            
+        }
+    }
+    
+    for( int y = 0; y < inputImg.rows; y++ ) {
+        for( int x = 0; x < inputImg.cols; x++ ) {
+            int label = labels.at<int>(y, x);
+            CV_Assert(0 <= label && label <= nums_1);
+            inputImg.at<Vec3b>(y, x) = colors_1[label];
+        }
+    }
+    
+    cout << "第二轮连通域： " << nums_1 << endl;
+    
+    return nums_0 + nums_1;
 }
 
 void debugShow(Mat img) {
