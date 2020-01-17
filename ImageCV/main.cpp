@@ -11,6 +11,7 @@ using namespace cv;
 
 int kmeans(Mat inputImg);
 int removeConnectedComponents(Mat inputImg);
+int fillConvexHull(Mat inputImg);
 
 void debugShow(Mat img);
 
@@ -25,6 +26,9 @@ int main(){
     //去除连通区域
     removeConnectedComponents(inputImg);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/removeConnectedComponents.jpg", inputImg);
+    //填充凸包
+    fillConvexHull(inputImg);
+    imwrite("/Users/xiecun/Documents/Graduation/data/Example/fillConvexHull.jpg", inputImg);
     return 0;
 }
 
@@ -117,7 +121,12 @@ int kmeans(Mat inputImg) {
     return 1;
 }
 
+//去除连通区域
 int removeConnectedComponents(Mat inputImg) {
+    
+    if (inputImg.empty()) {
+        return 0;
+    }
     
     /*
      第一轮去除虹膜外部连通域
@@ -224,9 +233,49 @@ int removeConnectedComponents(Mat inputImg) {
         }
     }
     
-    cout << "第二轮连通域： " << nums_1 << endl;
-    
     return nums_0 + nums_1;
+}
+
+//填充凸包
+int fillConvexHull(Mat inputImg) {
+    
+    if (inputImg.empty()) {
+        return 0;
+    }
+    
+    Mat grayImg;
+    //Converts an image from one color space to another.
+    cvtColor(inputImg, grayImg, CV_BGR2GRAY);
+    
+    //Detected contours. Each contour is stored as a vector of points (e.g. std::vector<std::vector<cv::Point> >).
+    vector<vector<Point>> contours;
+    
+    //Contour retrieval mode
+    int mode = RETR_CCOMP;
+    
+    //Contour approximation method
+    int method = CHAIN_APPROX_NONE;
+    
+    //寻找轮廓
+    findContours(grayImg, contours, mode, method);
+    
+    if (contours.size() <= 0)
+        return 0;
+    
+    //Output convex hull. It is either an integer vector of indices or vector of points. In the first case, the hull elements are 0-based indices of the convex hull points in the original array (since the set of convex hull points is a subset of the original point set). In the second case, hull elements are the convex hull points themselves.
+    vector<vector<Point>> hull(contours.size());
+    
+    //填充凸包
+//    for (int i = 0; i < contours.size(); i++) {
+//        //Finds the convex hull of a point set.
+//        convexHull(Mat(contours[i]), hull[i]);
+//        fillConvexPoly(inputImg, hull[i], Scalar(255, 255, 255), LINE_8);
+//    }
+    //Finds the convex hull of a point set.
+    convexHull(Mat(contours[0]), hull[0]);
+    fillConvexPoly(inputImg, hull[0], Scalar(255, 255, 255), LINE_8);
+    
+    return contours.size();
 }
 
 void debugShow(Mat img) {
