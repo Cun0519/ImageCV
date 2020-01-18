@@ -11,7 +11,7 @@ using namespace cv;
 
 int kmeans(Mat inputImg);
 int removeConnectedComponents(Mat inputImg);
-int fillConvexHull(Mat inputImg);
+Point2f fillConvexHulltoGetCentroid(Mat inputImg);
 
 void debugShow(Mat img);
 
@@ -26,18 +26,17 @@ int main(){
     //去除连通区域
     removeConnectedComponents(inputImg);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/removeConnectedComponents.jpg", inputImg);
-    //填充凸包
-    fillConvexHull(inputImg);
-    imwrite("/Users/xiecun/Documents/Graduation/data/Example/fillConvexHull.jpg", inputImg);
+    //填充凸包获得质心
+    Point2f centroid = fillConvexHulltoGetCentroid(inputImg);
+    imwrite("/Users/xiecun/Documents/Graduation/data/Example/fillConvexHulltoGetCentroid.jpg", inputImg);
+    //确定搜索区域
     return 0;
 }
 
 //k-means
 int kmeans(Mat inputImg) {
     
-    if (inputImg.empty()) {
-        return 0;
-    }
+    CV_Assert(!inputImg.empty());
     
     int index = 0;
     
@@ -124,9 +123,7 @@ int kmeans(Mat inputImg) {
 //去除连通区域
 int removeConnectedComponents(Mat inputImg) {
     
-    if (inputImg.empty()) {
-        return 0;
-    }
+    CV_Assert(!inputImg.empty());
     
     /*
      第一轮去除虹膜外部连通域
@@ -186,7 +183,7 @@ int removeConnectedComponents(Mat inputImg) {
         }
     }
     
-    cout << "第一轮连通域： " << nums_0 << endl;
+    //cout << "第一轮连通域： " << nums_0 << endl;
     
     /*
     第二轮去除虹膜外部连通域
@@ -233,15 +230,15 @@ int removeConnectedComponents(Mat inputImg) {
         }
     }
     
+    //cout << "第二轮连通域： " << nums_1 << endl;
+    
     return nums_0 + nums_1;
 }
 
 //填充凸包
-int fillConvexHull(Mat inputImg) {
+Point2f fillConvexHulltoGetCentroid(Mat inputImg) {
     
-    if (inputImg.empty()) {
-        return 0;
-    }
+    CV_Assert(!inputImg.empty());
     
     Mat grayImg;
     //Converts an image from one color space to another.
@@ -259,8 +256,7 @@ int fillConvexHull(Mat inputImg) {
     //寻找轮廓
     findContours(grayImg, contours, mode, method);
     
-    if (contours.size() <= 0)
-        return 0;
+    CV_Assert(contours.size() > 0);
     
     //Output convex hull. It is either an integer vector of indices or vector of points. In the first case, the hull elements are 0-based indices of the convex hull points in the original array (since the set of convex hull points is a subset of the original point set). In the second case, hull elements are the convex hull points themselves.
     vector<vector<Point>> hull(contours.size());
@@ -275,7 +271,21 @@ int fillConvexHull(Mat inputImg) {
     convexHull(Mat(contours[0]), hull[0]);
     fillConvexPoly(inputImg, hull[0], Scalar(255, 255, 255), LINE_8);
     
-    return contours.size();
+    //求质心
+    int sumX = 0, sumY = 0;
+    for (int i = 0; i < contours[0].size(); i++) {
+        sumX += contours[0][i].x;
+        sumY += contours[0][i].y;
+    }
+    Point2f centroid;
+    centroid.x = sumX / contours[0].size();
+    centroid.y = sumY / contours[0].size();
+    
+    //cout << centroid.x << " " << centroid.y << endl;
+    //inputImg.at<Vec3b>(centroid.y, centroid.x) = Vec3b(0, 255, 0);
+    
+    //返回质心
+    return centroid;
 }
 
 void debugShow(Mat img) {
