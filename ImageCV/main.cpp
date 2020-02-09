@@ -9,7 +9,7 @@
 using namespace std;
 using namespace cv;
 
-int kmeans(Mat inputImg);
+void kmeans(Mat inputImg);
 int removeConnectedComponents(Mat inputImg);
 Point2f fillConvexHulltoGetCentroid(Mat inputImg);
 
@@ -34,7 +34,7 @@ int main(){
 }
 
 //k-means
-int kmeans(Mat inputImg) {
+void kmeans(Mat inputImg) {
     
     CV_Assert(!inputImg.empty());
     
@@ -116,8 +116,6 @@ int kmeans(Mat inputImg) {
             }
         }
     }
-    
-    return 1;
 }
 
 //去除连通区域
