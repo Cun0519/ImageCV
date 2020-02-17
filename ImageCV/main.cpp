@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
@@ -9,12 +10,26 @@
 using namespace std;
 using namespace cv;
 
-void kmeans(Mat inputImg);
-int removeConnectedComponents(Mat inputImg);
-Point2f fillConvexHulltoGetCentroid(Mat inputImg, Point2f searchingArea[]);
+class Debug {
+public:
+    static void debugDrawSearchingAre(Mat inputImg, Point2f searchingArea[]);
+    static void debugShow(Mat img);
+};
 
-void debugDrawSearchingAre(Mat inputImg, Point2f searchingArea[]);
-void debugShow(Mat img);
+class IrisCenterLocalizationPreProcess {
+public:
+    static void kmeans(Mat inputImg);
+    static int removeConnectedComponents(Mat inputImg);
+    static Point2f fillConvexHulltoGetCentroid(Mat inputImg, Point2f searchingArea[]);
+};
+
+class IrisTemplateGeneration {
+public:
+    static vector<Mat> configurableTopBottomTemplates(int aIrisRadiusRange[], float topBar, float bottomBar, bool bold);
+    static vector<float> getOrdinaryWeightsForTemplates();
+    static vector< vector<Mat> > generateOrdinaryIrisTemplateSetWithIrisRadiusRange(int aIrisRadiusRange[]);
+    static vector<Mat> generateIrisTemplatesStandard(int aIrisRadiusRange[]);
+};
 
 int main(){
     
@@ -22,25 +37,31 @@ int main(){
     Mat inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/origin.jpg", IMREAD_COLOR);
     
     //k-means
-    kmeans(inputImg);
+    IrisCenterLocalizationPreProcess::kmeans(inputImg);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/kmeans.jpg", inputImg);
     //去除连通区域
-    removeConnectedComponents(inputImg);
+    IrisCenterLocalizationPreProcess::removeConnectedComponents(inputImg);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/removeConnectedComponents.jpg", inputImg);
     //填充凸包获得质心
     Point2f searchingArea[2];
-    fillConvexHulltoGetCentroid(inputImg, searchingArea);
+    IrisCenterLocalizationPreProcess::fillConvexHulltoGetCentroid(inputImg, searchingArea);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/fillConvexHulltoGetCentroid.jpg", inputImg);
     //绘制搜索区域
     inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/origin.jpg", IMREAD_COLOR);
-    debugDrawSearchingAre(inputImg, searchingArea);
+    Debug::debugDrawSearchingAre(inputImg, searchingArea);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/drawSearchingAre.jpg", inputImg);
+    
+    int aIrisRadiusRange[2];
+    aIrisRadiusRange[0] = 45;
+    aIrisRadiusRange[1] = 50;
+    IrisTemplateGeneration::generateIrisTemplatesStandard(aIrisRadiusRange);
+    
     return 0;
 }
 
 
 //k-means
-void kmeans(Mat inputImg) {
+void IrisCenterLocalizationPreProcess::kmeans(Mat inputImg) {
 
     CV_Assert(!inputImg.empty());
 
@@ -81,7 +102,7 @@ void kmeans(Mat inputImg) {
     int flags = KMEANS_RANDOM_CENTERS;
 
     //Finds centers of clusters and groups input samples around the clusters.
-    kmeans(data, k, bestLabels, criteria, attempts, flags);
+    ::kmeans(data, k, bestLabels, criteria, attempts, flags);
 
     //聚类后每簇的bgr值之和
     int rgbSum[k];
@@ -125,7 +146,7 @@ void kmeans(Mat inputImg) {
 }
 
 //去除连通区域
-int removeConnectedComponents(Mat inputImg) {
+int IrisCenterLocalizationPreProcess::removeConnectedComponents(Mat inputImg) {
 
     CV_Assert(!inputImg.empty());
 
@@ -156,7 +177,7 @@ int removeConnectedComponents(Mat inputImg) {
     //原图像大小
     int statArea_0[nums_0];
     for (int i = 0; i < nums_0; i++) {
-        statArea_0[i] = stats.at<int>(i, cv::CC_STAT_AREA);
+        statArea_0[i] = stats.at<int>(i, CC_STAT_AREA);
     }
     //对连通域面积进行排序
     sort(statArea_0, statArea_0 + nums_0);
@@ -166,10 +187,10 @@ int removeConnectedComponents(Mat inputImg) {
     int irisSize = statArea_0[nums_0 - 2];
     vector<Vec3b> colors_0(nums_0);
     for(int i = 0; i < nums_0; i++ ) {
-        if (stats.at<int>(i, cv::CC_STAT_AREA) == backGroundSize) {
+        if (stats.at<int>(i, CC_STAT_AREA) == backGroundSize) {
             //保留背景
             colors_0[i] = Vec3b(0, 0, 0);
-        } else if (stats.at<int>(i, cv::CC_STAT_AREA) == irisSize) {
+        } else if (stats.at<int>(i, CC_STAT_AREA) == irisSize) {
             //保留核心区域
             colors_0[i] = Vec3b(255, 255, 255);
         } else {
@@ -203,7 +224,7 @@ int removeConnectedComponents(Mat inputImg) {
     //原图像大小
     int statArea_1[nums_1];
     for (int i = 0; i < nums_1; i++) {
-        statArea_1[i] = stats.at<int>(i, cv::CC_STAT_AREA);
+        statArea_1[i] = stats.at<int>(i, CC_STAT_AREA);
     }
     //对连通域面积进行排序
     sort(statArea_1, statArea_1 + nums_1);
@@ -213,10 +234,10 @@ int removeConnectedComponents(Mat inputImg) {
     irisSize = statArea_1[nums_1 - 2];
     vector<Vec3b> colors_1(nums_1);
     for(int i = 0; i < nums_1; i++ ) {
-        if (stats.at<int>(i, cv::CC_STAT_AREA) == backGroundSize) {
+        if (stats.at<int>(i, CC_STAT_AREA) == backGroundSize) {
             //保留背景
             colors_1[i] = Vec3b(0, 0, 0);
-        } else if (stats.at<int>(i, cv::CC_STAT_AREA) == irisSize) {
+        } else if (stats.at<int>(i, CC_STAT_AREA) == irisSize) {
             //保留核心区域
             colors_1[i] = Vec3b(255, 255, 255);
         } else {
@@ -238,7 +259,7 @@ int removeConnectedComponents(Mat inputImg) {
 }
 
 //填充凸包
-Point2f fillConvexHulltoGetCentroid(Mat inputImg, Point2f searchingArea[]) {
+Point2f IrisCenterLocalizationPreProcess::fillConvexHulltoGetCentroid(Mat inputImg, Point2f searchingArea[]) {
 
     CV_Assert(!inputImg.empty());
 
@@ -294,10 +315,7 @@ Point2f fillConvexHulltoGetCentroid(Mat inputImg, Point2f searchingArea[]) {
 
 }
 
-
-
-
-void debugDrawSearchingAre(Mat inputImg, Point2f searchingArea[]) {
+void Debug::debugDrawSearchingAre(Mat inputImg, Point2f searchingArea[]) {
 
     for (int x = round(searchingArea[0].x); x < round(searchingArea[1].x); x++) {
         for (int y = round(searchingArea[0].y); y < round(searchingArea[1].y); y++) {
@@ -309,7 +327,60 @@ void debugDrawSearchingAre(Mat inputImg, Point2f searchingArea[]) {
 
 }
 
-void debugShow(Mat img) {
+void Debug::debugShow(Mat img) {
     imshow("DeBug", img);
     waitKey(0);
+}
+
+vector<Mat> IrisTemplateGeneration::configurableTopBottomTemplates(int aIrisRadiusRange[], float topBar, float bottomBar, bool bold) {
+    static Mat diskStrelKernel = getStructuringElement(MORPH_RECT, Size(3, 3));
+    
+    vector<Mat> irisTemplates;
+    // makes the template and adds them to the template vector.
+    for (int radius = aIrisRadiusRange[0]; radius < aIrisRadiusRange[1]; radius++) {
+        // draw the circle.
+        Mat ring = Mat::zeros(radius * 2 + 1, radius * 2 + 1, CV_32FC1);
+        circle(ring, Point2f(radius, radius), radius, Scalar::all(1));
+        if (bold) {
+            dilate(ring, ring, diskStrelKernel);
+        }
+        
+        Debug::debugShow(ring);
+        
+        // cut the top and bottom part.
+        int upperShelterRow = (int) (1.0f * ring.rows * topBar);
+        int bottomShelterRow = (int) (1.0f * ring.rows * bottomBar);
+        ring(Range(0, upperShelterRow), Range::all()) = Scalar(0.0f);
+        ring(Range(bottomShelterRow, ring.rows), Range::all()) = Scalar(0.0f);
+        
+        Debug::debugShow(ring);
+        
+        irisTemplates.push_back(ring);
+    }
+    return irisTemplates;
+}
+
+vector<float> IrisTemplateGeneration::getOrdinaryWeightsForTemplates() {
+    vector<float> weights;
+    weights.push_back(0.4);
+//    weights.push_back(0.1);
+//    weights.push_back(0.1);
+//    weights.push_back(0.1);
+//    weights.push_back(0.3);
+    
+    return weights;
+}
+
+vector< vector<Mat> > IrisTemplateGeneration::generateOrdinaryIrisTemplateSetWithIrisRadiusRange(int aIrisRadiusRange[]) {
+    vector< vector<Mat> > allIrisTemplates;
+    allIrisTemplates.push_back(IrisTemplateGeneration::generateIrisTemplatesStandard(aIrisRadiusRange));
+    
+    return allIrisTemplates;
+}
+
+//标准模板
+vector<Mat> IrisTemplateGeneration::generateIrisTemplatesStandard(int aIrisRadiusRange[]) {
+    static Mat diskStrelKernel = getStructuringElement(MORPH_RECT, Size(3,3));
+    
+    return configurableTopBottomTemplates(aIrisRadiusRange, 0.25, 0.75, true);
 }
