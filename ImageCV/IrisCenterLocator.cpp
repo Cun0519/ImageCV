@@ -15,7 +15,7 @@ void IrisCenterLocator::init() {
     this -> ordinaryIrisTemplates = IrisTemplateGeneration::generateOrdinaryIrisTemplateSetWithIrisRadiusRange(_irisRadiusRange);
     this -> ordinaryWeights = IrisTemplateGeneration::getOrdinaryWeightsForTemplates();
 }
-/*
+
 void IrisCenterLocator::setIrisRadiusRange(int irisRadiusRange[]) {
     int _irisRadiusRange[2];
     _irisRadiusRange[0] = irisRadiusRange[0];
@@ -24,6 +24,7 @@ void IrisCenterLocator::setIrisRadiusRange(int irisRadiusRange[]) {
     this -> ordinaryWeights = IrisTemplateGeneration::getOrdinaryWeightsForTemplates();
 }
 
+/*
 Point2i IrisCenterLocator::convolutionCore(Mat grayImage, vector<Mat> templates, Mat1b mask, float windowSizeRatio, float percentile, bool debug) {
     vector<cv::Mat> allCovStack;
     vector<cv::Mat> convResults(templates.size());

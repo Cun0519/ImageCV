@@ -9,7 +9,7 @@
 
 #include "Debug.hpp"
 #include "IrisCenterLocalizationPreProcess.hpp"
-#include "OpenCVExtensions.h"
+#include "IrisCenterLocator.hpp"
 
 using namespace std;
 using namespace cv;
@@ -33,6 +33,9 @@ int main() {
     inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/origin.jpg", IMREAD_COLOR);
     Debug::debugDrawSearchingAre(inputImg, searchingArea);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/drawSearchingAre.jpg", inputImg);
+    
+    IrisCenterLocator locator;
+    locator.init();
     
     return 0;
 }
