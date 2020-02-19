@@ -3,5 +3,6 @@
 
 #include "CVE_Image.hpp"
 #include "CVE_Core.hpp"
+#include "CVE_Analysis.hpp"
 
 #endif /* OpenCVExtensions_h */
