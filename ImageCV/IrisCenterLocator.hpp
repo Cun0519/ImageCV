@@ -25,15 +25,15 @@ using namespace cv;
 
 class IrisCenterLocator {
 public:
-    void init();
+    vector< vector<Mat> > ordinaryIrisTemplates;
+    vector<float> ordinaryWeights;
+    
+    IrisCenterLocator* init();
     void setIrisRadiusRange(int irisRadiusRange[]);
     Point2i convolutionCore(Mat grayImage, vector<Mat> templates, Mat1b mask, float windowSizeRatio, float percentile, bool debug);
     void extractAccurateTemplateParametersFromMask(float returnValue[], Mat maskImage, Point2f irisCenter, float radius);
     Mat DaugmanIrisCore(Mat eyeImage, vector<Point2f> eyeContour, float irisRadius, Point2f irisCenterPoint);
     void localizeIrisCenterIn(Mat eyeImage, vector<Point2f> eyeContour, Point2f irisCenter, float irisRadius, Mat outputImage);
-private:
-    vector< vector<Mat> > ordinaryIrisTemplates;
-    vector<float> ordinaryWeights;
 };
 
 #endif /* IrisCenterLocator_hpp */

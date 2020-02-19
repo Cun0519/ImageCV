@@ -8,12 +8,14 @@
 
 #include "IrisCenterLocator.hpp"
 
-void IrisCenterLocator::init() {
+IrisCenterLocator* IrisCenterLocator::init() {
     int _irisRadiusRange[2];
-    _irisRadiusRange[0] = 45;
-    _irisRadiusRange[1] = 50;
+    _irisRadiusRange[0] = 35;
+    _irisRadiusRange[1] = 40;
     this -> ordinaryIrisTemplates = IrisTemplateGeneration::generateOrdinaryIrisTemplateSetWithIrisRadiusRange(_irisRadiusRange);
     this -> ordinaryWeights = IrisTemplateGeneration::getOrdinaryWeightsForTemplates();
+    
+    return this;
 }
 
 void IrisCenterLocator::setIrisRadiusRange(int irisRadiusRange[]) {
@@ -24,15 +26,16 @@ void IrisCenterLocator::setIrisRadiusRange(int irisRadiusRange[]) {
     this -> ordinaryWeights = IrisTemplateGeneration::getOrdinaryWeightsForTemplates();
 }
 
-/*
 Point2i IrisCenterLocator::convolutionCore(Mat grayImage, vector<Mat> templates, Mat1b mask, float windowSizeRatio, float percentile, bool debug) {
     vector<cv::Mat> allCovStack;
     vector<cv::Mat> convResults(templates.size());
     vector<cv::Mat> convDiff(templates.size() - 1);
     
-    for (int i = 0; i< templates.size(); i++) {
+    //用不同的卷积核对原图像进行卷积
+    for (int i = 0; i < templates.size(); i++) {
         Mat convolutionResult;
         filter2D(grayImage, convolutionResult, CV_32F, templates[i]);
+        //矩阵归一化
         cv::normalize(convolutionResult, convolutionResult, 0.0f, 1.0f, NORM_MINMAX,CV_32FC1);
         convResults[i] = convolutionResult.clone();
         if (i > 0) {
@@ -48,20 +51,24 @@ Point2i IrisCenterLocator::convolutionCore(Mat grayImage, vector<Mat> templates,
     
     for (int it = 0; it < convDiff.size(); it++) {
         Mat1f sourceImage = convDiff[it];
-        vector<Point2i> localMaximas = std::get<0>(cve::imageLocalMaxima(sourceImage, 1, 1, -1, mask));
-        cv::Mat1f croppedGray = cve::cropROIWithBoundaryDetection(sourceImage, cve::CvRectMakeWithCenterPointAndSize(localMaximas[0], squareLength, squareLength));
+        vector<Point2i> localMaximas = std::get<0>(cve::imageLocalMaxima(sourceImage, 1, 1, -1, noArray()));
+        //cv::Mat1f croppedGray = cve::cropROIWithBoundaryDetection(sourceImage, cve::CvRectMakeWithCenterPointAndSize(localMaximas[0], squareLength, squareLength));
         bestCenterInEachLayerValue[it] = sourceImage(localMaximas[0].y, localMaximas[0].x);
         bestCenterInEachLayer[it] = localMaximas[0];
-        bestCenterInEachLayerSurrounding[it] = croppedGray;
+        //bestCenterInEachLayerSurrounding[it] = croppedGray;
     }
     
+    return bestCenterInEachLayer[0];
+    
+    /*
     // find the best layer
     int bestIndex = 0;
     float bestScore = -1.f;
     for (int i = 0; i < bestCenterInEachLayer.size(); i++) {
         cv::Mat1f tile = bestCenterInEachLayerSurrounding[i];
         float topValue = cve::topNPercentileValueOfMat(tile, percentile, CV_SORT_DESCENDING);
-        cv::Mat bwImage; cv::threshold(tile, bwImage, topValue, 1.0f, CV_THRESH_BINARY);
+        cv::Mat bwImage;
+        cv::threshold(tile, bwImage, topValue, 1.0f, CV_THRESH_BINARY);
         bwImage.convertTo(bwImage, CV_8UC1);
         bwImage = cve::removeSmallBlobsExceptLargest(bwImage);
         cv::Mat nonZeroCoordinates;
@@ -78,8 +85,9 @@ Point2i IrisCenterLocator::convolutionCore(Mat grayImage, vector<Mat> templates,
     }
     
     return bestCenterInEachLayer[bestIndex];
+    */
 }
-
+/*
 void IrisCenterLocator::extractAccurateTemplateParametersFromMask(float returnValue[], Mat maskImage, Point2f irisCenter, float radius) {
     vector<vector<cv::Point>> contours;
     vector<Vec4i> hierarchy;

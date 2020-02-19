@@ -12,6 +12,7 @@
 		5C0BA02323FC0784001A546D /* IrisTemplateGeneration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C0BA02123FC0784001A546D /* IrisTemplateGeneration.cpp */; };
 		5C0BA02623FC079D001A546D /* Debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C0BA02423FC079D001A546D /* Debug.cpp */; };
 		5C0BA02923FC07AE001A546D /* IrisCenterLocalizationPreProcess.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C0BA02723FC07AE001A546D /* IrisCenterLocalizationPreProcess.cpp */; };
+		5C0BA02D23FD0C96001A546D /* CVE_Image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C0BA02B23FD0C96001A546D /* CVE_Image.cpp */; };
 		5C6667B323CB858E0083283A /* libopencv_objdetect.3.4.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C6667A123CB858E0083283A /* libopencv_objdetect.3.4.9.dylib */; };
 		5C6667B423CB858E0083283A /* libopencv_dnn.3.4.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C6667A223CB858E0083283A /* libopencv_dnn.3.4.9.dylib */; };
 		5C6667B523CB858E0083283A /* libopencv_shape.3.4.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C6667A323CB858E0083283A /* libopencv_shape.3.4.9.dylib */; };
@@ -58,6 +59,8 @@
 		5C0BA02523FC079D001A546D /* Debug.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Debug.hpp; sourceTree = "<group>"; };
 		5C0BA02723FC07AE001A546D /* IrisCenterLocalizationPreProcess.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IrisCenterLocalizationPreProcess.cpp; sourceTree = "<group>"; };
 		5C0BA02823FC07AE001A546D /* IrisCenterLocalizationPreProcess.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = IrisCenterLocalizationPreProcess.hpp; sourceTree = "<group>"; };
+		5C0BA02B23FD0C96001A546D /* CVE_Image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CVE_Image.cpp; sourceTree = "<group>"; };
+		5C0BA02C23FD0C96001A546D /* CVE_Image.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CVE_Image.hpp; sourceTree = "<group>"; };
 		5C66679F23CB85750083283A /* libs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libs; sourceTree = "<group>"; };
 		5C6667A123CB858E0083283A /* libopencv_objdetect.3.4.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_objdetect.3.4.9.dylib; path = libs/libopencv_objdetect.3.4.9.dylib; sourceTree = "<group>"; };
 		5C6667A223CB858E0083283A /* libopencv_dnn.3.4.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_dnn.3.4.9.dylib; path = libs/libopencv_dnn.3.4.9.dylib; sourceTree = "<group>"; };
@@ -125,6 +128,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5C0BA02A23FD0C6E001A546D /* CVE */ = {
+			isa = PBXGroup;
+			children = (
+				5C0BA02B23FD0C96001A546D /* CVE_Image.cpp */,
+				5C0BA02C23FD0C96001A546D /* CVE_Image.hpp */,
+			);
+			path = CVE;
+			sourceTree = "<group>";
+		};
 		5C66679E23CB84AD0083283A /* libs */ = {
 			isa = PBXGroup;
 			children = (
@@ -153,6 +165,7 @@
 		5CADD69F23CB6A8900B6CCD8 /* ImageCV */ = {
 			isa = PBXGroup;
 			children = (
+				5C0BA02A23FD0C6E001A546D /* CVE */,
 				5CADD6A023CB6A8900B6CCD8 /* main.cpp */,
 				5C0BA01A23FC05E3001A546D /* OpenCVExtensions.h */,
 				5C0BA01B23FC074F001A546D /* IrisCenterLocalizationDelegate.cpp */,
@@ -270,6 +283,7 @@
 				5CADD6A123CB6A8900B6CCD8 /* main.cpp in Sources */,
 				5C0BA02623FC079D001A546D /* Debug.cpp in Sources */,
 				5C0BA02923FC07AE001A546D /* IrisCenterLocalizationPreProcess.cpp in Sources */,
+				5C0BA02D23FD0C96001A546D /* CVE_Image.cpp in Sources */,
 				5C0BA02023FC0772001A546D /* IrisCenterLocator.cpp in Sources */,
 				5C0BA02323FC0784001A546D /* IrisTemplateGeneration.cpp in Sources */,
 				5C0BA01D23FC074F001A546D /* IrisCenterLocalizationDelegate.cpp in Sources */,

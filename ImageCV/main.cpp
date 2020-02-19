@@ -31,11 +31,20 @@ int main() {
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/fillConvexHulltoGetCentroid.jpg", inputImg);
     //绘制搜索区域
     inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/origin.jpg", IMREAD_COLOR);
-    Debug::debugDrawSearchingAre(inputImg, searchingArea);
-    imwrite("/Users/xiecun/Documents/Graduation/data/Example/drawSearchingAre.jpg", inputImg);
+    //Debug::debugDrawSearchingAre(inputImg, searchingArea);
+    //imwrite("/Users/xiecun/Documents/Graduation/data/Example/drawSearchingAre.jpg", inputImg);
     
     IrisCenterLocator locator;
-    locator.init();
-    
+    int irisRadiusRange[2];
+    irisRadiusRange[0] = 33;
+    irisRadiusRange[1] = 38;
+    locator.setIrisRadiusRange(irisRadiusRange);
+    Mat grayImg;
+    //Converts an image from one color space to another.
+    cvtColor(inputImg, grayImg, CV_BGR2GRAY);
+    Mat1b temp;
+    Point2i point = locator.convolutionCore(grayImg, locator.ordinaryIrisTemplates[0], temp, 1, 1, false);
+    Debug::debugDrawPoint(grayImg, point);
+    Debug::debugShow(grayImg);
     return 0;
 }
