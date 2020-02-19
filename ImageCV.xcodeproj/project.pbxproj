@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5C0BA01D23FC074F001A546D /* IrisCenterLocalizationDelegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C0BA01B23FC074F001A546D /* IrisCenterLocalizationDelegate.cpp */; };
 		5C0BA02023FC0772001A546D /* IrisCenterLocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C0BA01E23FC0772001A546D /* IrisCenterLocator.cpp */; };
 		5C0BA02323FC0784001A546D /* IrisTemplateGeneration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C0BA02123FC0784001A546D /* IrisTemplateGeneration.cpp */; };
 		5C0BA02623FC079D001A546D /* Debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C0BA02423FC079D001A546D /* Debug.cpp */; };
@@ -51,8 +50,6 @@
 
 /* Begin PBXFileReference section */
 		5C0BA01A23FC05E3001A546D /* OpenCVExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCVExtensions.h; sourceTree = "<group>"; };
-		5C0BA01B23FC074F001A546D /* IrisCenterLocalizationDelegate.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IrisCenterLocalizationDelegate.cpp; sourceTree = "<group>"; };
-		5C0BA01C23FC074F001A546D /* IrisCenterLocalizationDelegate.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = IrisCenterLocalizationDelegate.hpp; sourceTree = "<group>"; };
 		5C0BA01E23FC0772001A546D /* IrisCenterLocator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IrisCenterLocator.cpp; sourceTree = "<group>"; };
 		5C0BA01F23FC0772001A546D /* IrisCenterLocator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = IrisCenterLocator.hpp; sourceTree = "<group>"; };
 		5C0BA02123FC0784001A546D /* IrisTemplateGeneration.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IrisTemplateGeneration.cpp; sourceTree = "<group>"; };
@@ -178,8 +175,6 @@
 				5C0BA02A23FD0C6E001A546D /* CVE */,
 				5CADD6A023CB6A8900B6CCD8 /* main.cpp */,
 				5C0BA01A23FC05E3001A546D /* OpenCVExtensions.h */,
-				5C0BA01B23FC074F001A546D /* IrisCenterLocalizationDelegate.cpp */,
-				5C0BA01C23FC074F001A546D /* IrisCenterLocalizationDelegate.hpp */,
 				5C0BA01E23FC0772001A546D /* IrisCenterLocator.cpp */,
 				5C0BA01F23FC0772001A546D /* IrisCenterLocator.hpp */,
 				5C0BA02123FC0784001A546D /* IrisTemplateGeneration.cpp */,
@@ -298,7 +293,6 @@
 				5C0BA02D23FD0C96001A546D /* CVE_Image.cpp in Sources */,
 				5C0BA02023FC0772001A546D /* IrisCenterLocator.cpp in Sources */,
 				5C0BA02323FC0784001A546D /* IrisTemplateGeneration.cpp in Sources */,
-				5C0BA01D23FC074F001A546D /* IrisCenterLocalizationDelegate.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
