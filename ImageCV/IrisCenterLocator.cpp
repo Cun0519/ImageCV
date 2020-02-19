@@ -147,9 +147,10 @@ Point2i IrisCenterLocator::localizeIrisCenter(Mat eyeImage, Point2i searchingAre
     mask = Mat::zeros(grayImg.size(), CV_8UC1);
     mask(rect).setTo(255);
     
+    //0.2f， 0.02f
     Point2i point = locator.convolutionCore(grayImg, locator.ordinaryIrisTemplates[0], mask, 0.33f, 0.04f, false);
-    Debug::debugDrawPoint(grayImg, point);
-    Debug::debugShow(grayImg);
+    //Debug::debugDrawPoint(grayImg, point);
+    //Debug::debugShow(grayImg);
     
     return point;
 }
