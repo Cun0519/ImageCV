@@ -207,7 +207,7 @@ int IrisCenterLocalizationPreProcess::removeConnectedComponents(Mat inputImg) {
 }
 
 //填充凸包
-Point2f IrisCenterLocalizationPreProcess::fillConvexHulltoGetCentroid(Mat inputImg, Point2f searchingArea[]) {
+Point2i IrisCenterLocalizationPreProcess::fillConvexHulltoGetCentroid(Mat inputImg, Point2i searchingArea[]) {
 
     CV_Assert(!inputImg.empty());
 
@@ -248,16 +248,16 @@ Point2f IrisCenterLocalizationPreProcess::fillConvexHulltoGetCentroid(Mat inputI
         sumX += contours[0][i].x;
         sumY += contours[0][i].y;
     }
-    Point2f centroid;
-    centroid.x = sumX / contours[0].size();
-    centroid.y = sumY / contours[0].size();
+    Point2i centroid;
+    centroid.x = round(sumX / contours[0].size());
+    centroid.y = round(sumY / contours[0].size());
 
     //计算瞳孔中心搜索区域的搜索长度
     double searchingLength = sqrt(contourArea(contours[0])) / 4;
-    searchingArea[0].x = centroid.x - searchingLength / 2.0;
-    searchingArea[0].y = centroid.y - searchingLength / 2.0;
-    searchingArea[1].x = centroid.x + searchingLength / 2.0;
-    searchingArea[1].y = centroid.y + searchingLength / 2.0;
+    searchingArea[0].x = round(centroid.x - searchingLength / 2.0);
+    searchingArea[0].y = round(centroid.y - searchingLength / 2.0);
+    searchingArea[1].x = round(centroid.x + searchingLength / 2.0);
+    searchingArea[1].y = round(centroid.y + searchingLength / 2.0);
 
     return centroid;
 

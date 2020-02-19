@@ -18,6 +18,7 @@ int main() {
     
     //输入图片
     Mat inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/origin.jpg", IMREAD_COLOR);
+    Mat eyeImage = inputImg.clone();
     
     //k-means
     IrisCenterLocalizationPreProcess::kmeans(inputImg);
@@ -26,25 +27,14 @@ int main() {
     IrisCenterLocalizationPreProcess::removeConnectedComponents(inputImg);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/removeConnectedComponents.jpg", inputImg);
     //填充凸包获得质心
-    Point2f searchingArea[2];
+    Point2i searchingArea[2];
     IrisCenterLocalizationPreProcess::fillConvexHulltoGetCentroid(inputImg, searchingArea);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/fillConvexHulltoGetCentroid.jpg", inputImg);
-    //绘制搜索区域
-    inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/origin.jpg", IMREAD_COLOR);
-    //Debug::debugDrawSearchingAre(inputImg, searchingArea);
-    //imwrite("/Users/xiecun/Documents/Graduation/data/Example/drawSearchingAre.jpg", inputImg);
     
+    //通过卷积定位瞳孔中心
     IrisCenterLocator locator;
-    int irisRadiusRange[2];
-    irisRadiusRange[0] = 33;
-    irisRadiusRange[1] = 38;
-    locator.setIrisRadiusRange(irisRadiusRange);
-    Mat grayImg;
-    //Converts an image from one color space to another.
-    cvtColor(inputImg, grayImg, CV_BGR2GRAY);
-    Mat1b temp;
-    Point2i point = locator.convolutionCore(grayImg, locator.ordinaryIrisTemplates[0], temp, 1, 1, false);
-    Debug::debugDrawPoint(grayImg, point);
-    Debug::debugShow(grayImg);
+    Point2i irisCenter = locator.localizeIrisCenter(eyeImage, searchingArea);
+    cout << " irisCenter.x: " << irisCenter.x << " irisCenter.y: " << irisCenter.y << endl;
+    
     return 0;
 }

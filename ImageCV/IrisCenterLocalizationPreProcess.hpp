@@ -26,7 +26,7 @@ class IrisCenterLocalizationPreProcess {
 public:
     static void kmeans(Mat inputImg);
     static int removeConnectedComponents(Mat inputImg);
-    static Point2f fillConvexHulltoGetCentroid(Mat inputImg, Point2f searchingArea[]);
+    static Point2i fillConvexHulltoGetCentroid(Mat inputImg, Point2i searchingArea[]);
 };
 
 #endif /* IrisCenterLocalizationPreProcess_hpp */

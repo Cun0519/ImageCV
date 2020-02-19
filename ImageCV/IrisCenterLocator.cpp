@@ -10,7 +10,7 @@
 
 IrisCenterLocator* IrisCenterLocator::init() {
     int _irisRadiusRange[2];
-    _irisRadiusRange[0] = 35;
+    _irisRadiusRange[0] = 30;
     _irisRadiusRange[1] = 40;
     this -> ordinaryIrisTemplates = IrisTemplateGeneration::generateOrdinaryIrisTemplateSetWithIrisRadiusRange(_irisRadiusRange);
     this -> ordinaryWeights = IrisTemplateGeneration::getOrdinaryWeightsForTemplates();
@@ -27,7 +27,6 @@ void IrisCenterLocator::setIrisRadiusRange(int irisRadiusRange[]) {
 }
 
 Point2i IrisCenterLocator::convolutionCore(Mat grayImage, vector<Mat> templates, Mat1b mask, float windowSizeRatio, float percentile, bool debug) {
-    vector<cv::Mat> allCovStack;
     vector<cv::Mat> convResults(templates.size());
     vector<cv::Mat> convDiff(templates.size() - 1);
     
@@ -51,14 +50,15 @@ Point2i IrisCenterLocator::convolutionCore(Mat grayImage, vector<Mat> templates,
     
     for (int it = 0; it < convDiff.size(); it++) {
         Mat1f sourceImage = convDiff[it];
-        vector<Point2i> localMaximas = std::get<0>(cve::imageLocalMaxima(sourceImage, 1, 1, -1, noArray()));
+        vector<Point2i> localMaximas = std::get<0>(cve::imageLocalMaxima(sourceImage, 1, 1, -1, mask));
         //cv::Mat1f croppedGray = cve::cropROIWithBoundaryDetection(sourceImage, cve::CvRectMakeWithCenterPointAndSize(localMaximas[0], squareLength, squareLength));
         bestCenterInEachLayerValue[it] = sourceImage(localMaximas[0].y, localMaximas[0].x);
         bestCenterInEachLayer[it] = localMaximas[0];
+        //cout << bestCenterInEachLayer[it].x << " " << bestCenterInEachLayer[it].y << endl;
         //bestCenterInEachLayerSurrounding[it] = croppedGray;
     }
     
-    return bestCenterInEachLayer[0];
+    return bestCenterInEachLayer[1];
     
     /*
     // find the best layer
@@ -131,9 +131,30 @@ void IrisCenterLocator::extractAccurateTemplateParametersFromMask(float returnVa
 }
 
 Mat IrisCenterLocator::DaugmanIrisCore(Mat eyeImage, vector<Point2f> eyeContour, float irisRadius, Point2f irisCenterPoint) {
-    return eyeImage;
 }
 void IrisCenterLocator::localizeIrisCenterIn(Mat eyeImage, vector<Point2f> eyeContour, Point2f irisCenter, float irisRadius, Mat outputImage) {
     
 }
 */
+
+Point2i IrisCenterLocator::localizeIrisCenter(Mat eyeImage, Point2i searchingArea[]) {
+    IrisCenterLocator locator;
+    
+    locator.init();
+    
+    Mat grayImg;
+    //Converts an image from one color space to another.
+    cvtColor(eyeImage, grayImg, CV_BGR2GRAY);
+    
+    //通过mask确定搜索区域
+    Mat1b mask;
+    Rect rect(searchingArea[0].x, searchingArea[0].y, searchingArea[1].x - searchingArea[0].x, searchingArea[1].y - searchingArea[0].y);
+    mask = Mat::zeros(grayImg.size(), CV_8UC1);
+    mask(rect).setTo(255);
+    
+    Point2i point = locator.convolutionCore(grayImg, locator.ordinaryIrisTemplates[0], mask, 1, 1, false);
+    Debug::debugDrawPoint(grayImg, point);
+    Debug::debugShow(grayImg);
+    
+    return point;
+}

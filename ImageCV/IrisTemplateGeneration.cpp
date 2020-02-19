@@ -13,7 +13,7 @@ vector<Mat> IrisTemplateGeneration::configurableTopBottomTemplates(int aIrisRadi
     
     vector<Mat> irisTemplates;
     // makes the template and adds them to the template vector.
-    for (int radius = aIrisRadiusRange[0]; radius < aIrisRadiusRange[1]; radius += 2) {
+    for (int radius = aIrisRadiusRange[0]; radius < aIrisRadiusRange[1]; radius += 3) {
         // draw the circle.
         Mat ring = Mat::zeros(radius * 2 + 1, radius * 2 + 1, CV_32FC1);
         circle(ring, Point2f(radius, radius), radius, Scalar::all(1));
@@ -54,5 +54,5 @@ vector< vector<Mat> > IrisTemplateGeneration::generateOrdinaryIrisTemplateSetWit
 vector<Mat> IrisTemplateGeneration::generateIrisTemplatesStandard(int aIrisRadiusRange[]) {
     static Mat diskStrelKernel = getStructuringElement(MORPH_RECT, Size(3,3));
     
-    return configurableTopBottomTemplates(aIrisRadiusRange, 0.25, 0.75, true);
+    return configurableTopBottomTemplates(aIrisRadiusRange, 0.2, 0.8, false);
 }
