@@ -50,7 +50,7 @@ Point2i IrisCenterLocator::convolutionCore(Mat grayImage, vector<Mat> templates,
     
     for (int it = 0; it < convDiff.size(); it++) {
         Mat1f sourceImage = convDiff[it];
-        vector<Point2i> localMaximas = std::get<0>(cve::imageLocalMaxima(sourceImage, 1, 1, -1, mask));
+        vector<Point2i> localMaximas = cve::imageLocalMaxima(sourceImage, 1, 1, -1, mask);
         cv::Mat1f croppedGray = cve::cropROIWithBoundaryDetection(sourceImage, cve::CvRectMakeWithCenterPointAndSize(localMaximas[0], squareLength, squareLength));
         bestCenterInEachLayerValue[it] = sourceImage(localMaximas[0].y, localMaximas[0].x);
         bestCenterInEachLayer[it] = localMaximas[0];

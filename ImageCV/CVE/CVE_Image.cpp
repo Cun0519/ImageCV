@@ -10,7 +10,7 @@
 
 namespace cve {
 
-    std::tuple<std::vector<cv::Point2i>, std::vector<double>> imageLocalMaxima(const cv::Mat& input, int nLocMax, float minDistBtwLocMax, float threshold, cv::InputArray mask) {
+    std::vector<cv::Point2i> imageLocalMaxima(const cv::Mat& input, int nLocMax, float minDistBtwLocMax, float threshold, cv::InputArray mask) {
         cv::Mat1f playground;
         input.convertTo(playground, CV_32FC1);
         std::vector<cv::Point2i> peakPoints;
@@ -33,6 +33,6 @@ namespace cve {
                 break;
         }
         
-        return std::make_tuple(peakPoints, maxValues);
+        return peakPoints;
     }
 }

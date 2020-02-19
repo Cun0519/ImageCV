@@ -22,7 +22,7 @@ namespace cve {
      @param threshold The threshold value of local maxima. If negative(< -1), the threshold = minValue(input).
      @return A vector of pixel coordinate(s) (in Pixel2i type) of the identified local maxima(s).
      */
-    std::tuple<std::vector<cv::Point2i>, std::vector<double>> imageLocalMaxima(const cv::Mat & input, int nLocMax = 1, float minDistBtwLocMax = 1, float threshold = -1, cv::InputArray mask = cv::noArray());
+    std::vector<cv::Point2i> imageLocalMaxima(const cv::Mat & input, int nLocMax = 1, float minDistBtwLocMax = 1, float threshold = -1, cv::InputArray mask = cv::noArray());
 }
 
 #endif /* CVE_Image_hpp */
