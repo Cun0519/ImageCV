@@ -22,8 +22,8 @@ using namespace cv;
 
 class Debug {
 public:
-    static void debugDrawAre(Mat inputImg, Point2f area[]);
-    static void debugDrawPoint(Mat inputImg, Point2f point);
+    static void debugDrawAre(Mat inputImg, Point2i area[]);
+    static void debugDrawPoint(Mat inputImg, Point2i point);
     static void debugShow(Mat img);
 };
 

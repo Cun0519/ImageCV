@@ -33,6 +33,8 @@ int main() {
     //通过卷积定位瞳孔中心
     IrisCenterLocator locator;
     Point2i irisCenter = locator.localizeIrisCenter(eyeImage, searchingArea);
+    //Debug::debugDrawPoint(eyeImage, irisCenter);
+    //Debug::debugShow(eyeImage);
     cout << "irisCenter.x: " << irisCenter.x << "\nirisCenter.y: " << irisCenter.y << endl;
     
     return 0;

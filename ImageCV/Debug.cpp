@@ -8,10 +8,10 @@
 
 #include "Debug.hpp"
 
-void Debug::debugDrawAre(Mat inputImg, Point2f area[]) {
+void Debug::debugDrawAre(Mat inputImg, Point2i area[]) {
 
-    for (int x = round(area[0].x); x < round(area[1].x); x++) {
-        for (int y = round(area[0].y); y < round(area[1].y); y++) {
+    for (int x = area[0].x; x < area[1].x; x++) {
+        for (int y = area[0].y; y < area[1].y; y++) {
             inputImg.ptr<Vec3b>(y)[x][0] = 0;
             inputImg.ptr<Vec3b>(y)[x][1] = 255;
             inputImg.ptr<Vec3b>(y)[x][2] = 0;
@@ -20,10 +20,10 @@ void Debug::debugDrawAre(Mat inputImg, Point2f area[]) {
 
 }
 
-void Debug::debugDrawPoint(Mat inputImg, Point2f point) {
-    inputImg.ptr<Vec3b>(point.y)[(int)point.x][0] = 0;
-    inputImg.ptr<Vec3b>(point.y)[(int)point.x][1] = 255;
-    inputImg.ptr<Vec3b>(point.y)[(int)point.x][2] = 0;
+void Debug::debugDrawPoint(Mat inputImg, Point2i point) {
+    inputImg.ptr<Vec3b>(point.y)[point.x][0] = 0;
+    inputImg.ptr<Vec3b>(point.y)[point.x][1] = 255;
+    inputImg.ptr<Vec3b>(point.y)[point.x][2] = 0;
 }
 
 void Debug::debugShow(Mat img) {
