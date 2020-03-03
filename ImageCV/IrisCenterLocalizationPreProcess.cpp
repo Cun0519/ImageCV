@@ -11,8 +11,8 @@
 //去除高光
 void IrisCenterLocalizationPreProcess::removeHighlights(Mat inputImg) {
     
-    //illuminationChange() == 0
-    //inpaint() == 1
+    //inpaint() == 0
+    //illuminationChange() == 1
     int flag = 0;
     
     CV_Assert(!inputImg.empty());
@@ -25,8 +25,10 @@ void IrisCenterLocalizationPreProcess::removeHighlights(Mat inputImg) {
     
     if (flag == 0) {
         inpaint(inputImg, mask, inputImg, 3, INPAINT_TELEA);
+        //imwrite("/Users/xiecun/Downloads/HighLights_inpaint.jpg", inputImg);
     } else if (flag == 1) {
         illuminationChange(inputImg, mask, inputImg, 0.2f, 0.4f);
+        //imwrite("/Users/xiecun/Downloads/HighLights_illuminationChange.jpg", inputImg);
     }
     
     Debug::debugShow(inputImg);
