@@ -8,6 +8,29 @@
 
 #include "IrisCenterLocalizationPreProcess.hpp"
 
+void IrisCenterLocalizationPreProcess::removeHighlights(Mat inputImg) {
+    
+    //illuminationChange() == 0
+    //inpaint() == 1
+    int flag = 0;
+    
+    CV_Assert(!inputImg.empty());
+    
+    Mat grayImg;
+    Mat mask;
+    
+    cvtColor(inputImg, grayImg, CV_BGR2GRAY);
+    threshold(grayImg, mask, 220, 255, THRESH_BINARY);
+    
+    if (flag == 0) {
+        inpaint(inputImg, mask, inputImg, 3, INPAINT_TELEA);
+    } else if (flag == 1) {
+        illuminationChange(inputImg, mask, inputImg, 0.2f, 0.4f);
+    }
+    
+    Debug::debugShow(inputImg);
+}
+
 //k-means
 void IrisCenterLocalizationPreProcess::kmeans(Mat inputImg) {
 
