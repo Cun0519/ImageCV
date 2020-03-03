@@ -8,6 +8,7 @@
 
 #include "IrisCenterLocalizationPreProcess.hpp"
 
+//去除高光
 void IrisCenterLocalizationPreProcess::removeHighlights(Mat inputImg) {
     
     //illuminationChange() == 0
