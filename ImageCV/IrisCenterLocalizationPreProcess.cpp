@@ -25,13 +25,10 @@ void IrisCenterLocalizationPreProcess::removeHighlights(Mat inputImg) {
     
     if (flag == 0) {
         inpaint(inputImg, mask, inputImg, 3, INPAINT_TELEA);
-        //imwrite("/Users/xiecun/Downloads/HighLights_inpaint.jpg", inputImg);
     } else if (flag == 1) {
         illuminationChange(inputImg, mask, inputImg, 0.2f, 0.4f);
-        //imwrite("/Users/xiecun/Downloads/HighLights_illuminationChange.jpg", inputImg);
     }
-    
-    Debug::debugShow(inputImg);
+
 }
 
 //k-means

@@ -20,7 +20,8 @@ int main() {
     Mat eyeImage = inputImg.clone();
     
     //去除高光
-    IrisCenterLocalizationPreProcess::removeHighlights(inputImg);
+    //IrisCenterLocalizationPreProcess::removeHighlights(inputImg);
+    //imwrite("/Users/xiecun/Documents/Graduation/data/Example/removeHighlights.jpg", inputImg);
     //k-means
     IrisCenterLocalizationPreProcess::kmeans(inputImg);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/kmeans.jpg", inputImg);
