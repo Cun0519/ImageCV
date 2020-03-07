@@ -16,17 +16,18 @@ void IrisCenterLocalizationPreProcess::removeHighlights(Mat inputImg) {
     Mat grayImg;
     Mat mask;
     
+    Debug::debugShow(inputImg);
+    cvtColor(inputImg, grayImg, CV_BGR2GRAY);
+    Debug::debugShow(grayImg);
+    equalizeHist(grayImg, grayImg);
+    Debug::debugShow(grayImg);
+    cvtColor(grayImg, inputImg, CV_GRAY2BGR);
+    
     //lightThreshold需要根据直方图进一步获取准确值
     int lightThreshold = 180;
-    
-    cvtColor(inputImg, grayImg, CV_BGR2GRAY);
     threshold(grayImg, mask, lightThreshold, 255, THRESH_BINARY);
-    
-    //在某些具体范围内将高光点设置为0
-    
-    //Debug::debugShow(inputImg);
     inpaint(inputImg, mask, inputImg, 10, INPAINT_TELEA);
-    //Debug::debugShow(inputImg);
+    Debug::debugShow(inputImg);
 }
 
 //k-means

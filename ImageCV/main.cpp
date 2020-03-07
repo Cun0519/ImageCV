@@ -16,12 +16,12 @@ using namespace cv;
 int main() {
     
     //输入图片
-    Mat inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/Light0.jpg", IMREAD_COLOR);
+    Mat inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/1.jpg", IMREAD_COLOR);
     Mat eyeImage = inputImg.clone();
     
     //去除高光
     IrisCenterLocalizationPreProcess::removeHighlights(inputImg);
-    imwrite("/Users/xiecun/Documents/Graduation/data/Example/removeHighlights.jpg", inputImg);
+    //imwrite("/Users/xiecun/Documents/Graduation/data/Example/removeHighlights.jpg", inputImg);
     //k-means
     IrisCenterLocalizationPreProcess::kmeans(inputImg);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/kmeans.jpg", inputImg);
@@ -39,6 +39,5 @@ int main() {
     //Debug::debugDrawPoint(eyeImage, irisCenter);
     //Debug::debugShow(eyeImage);
     cout << "irisCenter.x: " << irisCenter.x << "\nirisCenter.y: " << irisCenter.y << endl;
-    
     return 0;
 }
