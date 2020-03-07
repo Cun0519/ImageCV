@@ -53,9 +53,9 @@ void IrisCenterLocalizationPreProcess::kmeans(Mat inputImg) {
         index = row * width;
         for (int col = 0; col < width; col++) {
             Vec3b bgr = inputImg.at<Vec3b>(row, col);
-            data.at<float>(index, 0) = inputImg.at<Vec3b>(row, col)[0];
-            data.at<float>(index, 1) = inputImg.at<Vec3b>(row, col)[1];
-            data.at<float>(index, 2) = inputImg.at<Vec3b>(row, col)[2];
+            data.at<float>(index, 0) = bgr[0];
+            data.at<float>(index, 1) = bgr[1];
+            data.at<float>(index, 2) = bgr[2];
             index++;
         }
     }
