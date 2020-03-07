@@ -42,16 +42,17 @@ void IrisCenterLocalizationPreProcess::kmeans(Mat inputImg) {
     int dims = inputImg.channels();
 
     //Data for clustering. An array of N-Dimensional points with float coordinates is needed.
-    Mat data(sampleCount, dims, CV_32F, Scalar(10));
+    Mat data(sampleCount, dims, CV_32F);
 
     //将原始的RGB数据转换到data
     for (int row = 0; row < height; row++) {
+        index = row * width;
         for (int col = 0; col < width; col++) {
-            index = row * width + col;
             Vec3b bgr = inputImg.at<Vec3b>(row, col);
-            data.at<float>(index, 0) = static_cast<int>(bgr[0]);
-            data.at<float>(index, 1) = static_cast<int>(bgr[1]);
-            data.at<float>(index, 2) = static_cast<int>(bgr[2]);
+            data.at<float>(index, 0) = inputImg.at<Vec3b>(row, col)[0];
+            data.at<float>(index, 1) = inputImg.at<Vec3b>(row, col)[1];
+            data.at<float>(index, 2) = inputImg.at<Vec3b>(row, col)[2];
+            index++;
         }
     }
 
