@@ -33,9 +33,13 @@ void IrisCenterLocalizationPreProcess::removeHighlights(Mat inputImg) {
 void IrisCenterLocalizationPreProcess::kmeans(Mat inputImg) {
 
     CV_Assert(!inputImg.empty());
+    
+    Scalar blackWhite[] = {
+            Scalar(255,255,255),
+            Scalar(0,0,0)
+    };
 
     int index = 0;
-
     int width = inputImg.cols;
     int height = inputImg.rows;
     int sampleCount = width * height;
@@ -56,22 +60,12 @@ void IrisCenterLocalizationPreProcess::kmeans(Mat inputImg) {
         }
     }
 
-    //Number of clusters to split the set by.
     int k = 3;
-
-    //Input/output integer array that stores the cluster indices for every sample.
     Mat bestLabels;
-
-    //The algorithm termination criteria, that is, the maximum number of iterations and/or the desired accuracy. The accuracy is specified as criteria.epsilon. As soon as each of the cluster centers moves by less than criteria.epsilon on some iteration, the algorithm stops.
     TermCriteria criteria = TermCriteria(TermCriteria::MAX_ITER + TermCriteria::EPS, 100, 1.0);
-
-    //Flag to specify the number of times the algorithm is executed using different initial labellings. The algorithm returns the labels that yield the best compactness (see the last function parameter).
     int attempts = 3;
-
-    //Flag that can take values of cv::KmeansFlags
     int flags = KMEANS_RANDOM_CENTERS;
 
-    //Finds centers of clusters and groups input samples around the clusters.
     ::kmeans(data, k, bestLabels, criteria, attempts, flags);
 
     //聚类后每簇的bgr值之和
@@ -94,13 +88,9 @@ void IrisCenterLocalizationPreProcess::kmeans(Mat inputImg) {
 
     //显示图像分割结果
     //把样本数据点转换回去
-    Scalar blackWhite[] = {
-            Scalar(255,255,255),
-            Scalar(0,0,0)
-    };
     for (int row = 0; row < height; row++) {
+        index = row * width;
         for (int col = 0; col < width; col++) {
-            index = row * width + col;
             int label = bestLabels.at<int>(index, 0);
             if (label == flag) {
                 inputImg.at<Vec3b>(row, col)[0] = blackWhite[0][0];
@@ -111,6 +101,7 @@ void IrisCenterLocalizationPreProcess::kmeans(Mat inputImg) {
                 inputImg.at<Vec3b>(row, col)[1] = blackWhite[1][1];
                 inputImg.at<Vec3b>(row, col)[2] = blackWhite[1][2];
             }
+            index++;
         }
     }
 }

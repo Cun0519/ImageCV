@@ -16,7 +16,7 @@ using namespace cv;
 int main() {
     
     //输入图片
-    Mat inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/Light0.jpg", IMREAD_COLOR);
+    Mat inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/Light1.jpg", IMREAD_COLOR);
     Mat eyeImage = inputImg.clone();
     
     //去除高光
