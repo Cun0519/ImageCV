@@ -28,7 +28,7 @@ public:
     static void removeHighlights(Mat inputImg);
     static void kmeans(Mat inputImg);
     static int removeConnectedComponents(Mat inputImg);
-    static Point2i fillConvexHulltoGetCentroid(Mat inputImg, Point2i searchingArea[]);
+    static Point2i getCentroid(Mat inputImg, Point2i searchingArea[]);
 };
 
 #endif /* IrisCenterLocalizationPreProcess_hpp */

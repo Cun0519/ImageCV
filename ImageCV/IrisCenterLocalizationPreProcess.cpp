@@ -11,24 +11,22 @@
 //去除高光
 void IrisCenterLocalizationPreProcess::removeHighlights(Mat inputImg) {
     
-    //inpaint() == 0
-    //illuminationChange() == 1
-    int flag = 0;
-    
     CV_Assert(!inputImg.empty());
     
     Mat grayImg;
     Mat mask;
     
-    cvtColor(inputImg, grayImg, CV_BGR2GRAY);
-    threshold(grayImg, mask, 220, 255, THRESH_BINARY);
+    //lightThreshold需要根据直方图进一步获取准确值
+    int lightThreshold = 180;
     
-    if (flag == 0) {
-        inpaint(inputImg, mask, inputImg, 3, INPAINT_TELEA);
-    } else if (flag == 1) {
-        illuminationChange(inputImg, mask, inputImg, 0.2f, 0.4f);
-    }
-
+    cvtColor(inputImg, grayImg, CV_BGR2GRAY);
+    threshold(grayImg, mask, lightThreshold, 255, THRESH_BINARY);
+    
+    //在某些具体范围内将高光点设置为0
+    
+    //Debug::debugShow(inputImg);
+    inpaint(inputImg, mask, inputImg, 10, INPAINT_TELEA);
+    //Debug::debugShow(inputImg);
 }
 
 //k-means
@@ -229,8 +227,8 @@ int IrisCenterLocalizationPreProcess::removeConnectedComponents(Mat inputImg) {
     return nums_0 + nums_1;
 }
 
-//填充凸包
-Point2i IrisCenterLocalizationPreProcess::fillConvexHulltoGetCentroid(Mat inputImg, Point2i searchingArea[]) {
+//获取质心区域
+Point2i IrisCenterLocalizationPreProcess::getCentroid(Mat inputImg, Point2i searchingArea[]) {
 
     CV_Assert(!inputImg.empty());
 
@@ -253,17 +251,12 @@ Point2i IrisCenterLocalizationPreProcess::fillConvexHulltoGetCentroid(Mat inputI
     CV_Assert(contours.size() > 0);
 
     //Output convex hull. It is either an integer vector of indices or vector of points. In the first case, the hull elements are 0-based indices of the convex hull points in the original array (since the set of convex hull points is a subset of the original point set). In the second case, hull elements are the convex hull points themselves.
-    vector <vector <Point> > hull(contours.size());
+    //vector <vector <Point> > hull(contours.size());
 
     //填充凸包
-//    for (int i = 0; i < contours.size(); i++) {
-//        //Finds the convex hull of a point set.
-//        convexHull(Mat(contours[i]), hull[i]);
-//        fillConvexPoly(inputImg, hull[i], Scalar(255, 255, 255), LINE_8);
-//    }
     //Finds the convex hull of a point set.
-    convexHull(Mat(contours[0]), hull[0]);
-    fillConvexPoly(inputImg, hull[0], Scalar(255, 255, 255), LINE_8);
+    //convexHull(Mat(contours[0]), hull[0]);
+    //fillConvexPoly(inputImg, hull[0], Scalar(255, 255, 255), LINE_8);
 
     //求质心
     int sumX = 0, sumY = 0;
