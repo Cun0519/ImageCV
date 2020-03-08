@@ -8,7 +8,7 @@
 
 #include "IrisCenterLocalizationPreProcess.hpp"
 
-//去除高光
+//去除高光和暗沉
 void IrisCenterLocalizationPreProcess::removeHighlights(Mat inputImg) {
     
     CV_Assert(!inputImg.empty());
@@ -16,18 +16,14 @@ void IrisCenterLocalizationPreProcess::removeHighlights(Mat inputImg) {
     Mat grayImg;
     Mat mask;
     
-    Debug::debugShow(inputImg);
     cvtColor(inputImg, grayImg, CV_BGR2GRAY);
-    Debug::debugShow(grayImg);
     equalizeHist(grayImg, grayImg);
-    Debug::debugShow(grayImg);
     cvtColor(grayImg, inputImg, CV_GRAY2BGR);
     
     //lightThreshold需要根据直方图进一步获取准确值
-    int lightThreshold = 180;
+    int lightThreshold = 166;
     threshold(grayImg, mask, lightThreshold, 255, THRESH_BINARY);
     inpaint(inputImg, mask, inputImg, 10, INPAINT_TELEA);
-    Debug::debugShow(inputImg);
 }
 
 //k-means
