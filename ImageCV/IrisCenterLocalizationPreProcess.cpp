@@ -12,29 +12,13 @@
 void IrisCenterLocalizationPreProcess::qualityOptimization(Mat inputImg) {
     
     CV_Assert(!inputImg.empty());
-    
-    Mat grayImg;
-    Mat mask;
-    
-    cvtColor(inputImg, grayImg, CV_BGR2GRAY);
-    equalizeHist(grayImg, grayImg);
-    cvtColor(grayImg, inputImg, CV_GRAY2BGR);
-    
-    //lightThreshold需要根据直方图进一步获取准确值
-    int lightThreshold = 166;
-    threshold(grayImg, mask, lightThreshold, 255, THRESH_BINARY);
-    inpaint(inputImg, mask, inputImg, 10, INPAINT_TELEA);
+
 }
 
 //k-means
 void IrisCenterLocalizationPreProcess::kmeans(Mat inputImg) {
 
     CV_Assert(!inputImg.empty());
-    
-    Scalar blackWhite[] = {
-            Scalar(255,255,255),
-            Scalar(0,0,0)
-    };
 
     int index = 0;
     int width = inputImg.cols;
@@ -50,9 +34,9 @@ void IrisCenterLocalizationPreProcess::kmeans(Mat inputImg) {
         index = row * width;
         for (int col = 0; col < width; col++) {
             Vec3b bgr = inputImg.at<Vec3b>(row, col);
-            data.at<float>(index, 0) = bgr[0];
-            data.at<float>(index, 1) = bgr[1];
-            data.at<float>(index, 2) = bgr[2];
+            data.ptr<float>(index)[0] = bgr[0];
+            data.ptr<float>(index)[1] = bgr[1];
+            data.ptr<float>(index)[2] = bgr[2];
             index++;
         }
     }
@@ -71,7 +55,7 @@ void IrisCenterLocalizationPreProcess::kmeans(Mat inputImg) {
         rgbSum[i] = 0;
     }
     for (int i = 0; i < bestLabels.rows * bestLabels.cols; i++) {
-        rgbSum[bestLabels.at<int>(i, 0)] += data.at<float>(i, 0) + data.at<float>(i, 1) + data.at<float>(i, 2);
+        rgbSum[bestLabels.at<int>(i, 0)] += data.ptr<float>(i)[0] + data.ptr<float>(i)[1] + data.ptr<float>(i)[2];
     }
     //找出bgr值之和的最小值
     int num = rgbSum[0];
@@ -90,13 +74,9 @@ void IrisCenterLocalizationPreProcess::kmeans(Mat inputImg) {
         for (int col = 0; col < width; col++) {
             int label = bestLabels.at<int>(index, 0);
             if (label == flag) {
-                inputImg.at<Vec3b>(row, col)[0] = blackWhite[0][0];
-                inputImg.at<Vec3b>(row, col)[1] = blackWhite[0][1];
-                inputImg.at<Vec3b>(row, col)[2] = blackWhite[0][2];
+                inputImg.ptr<Vec3b>(row)[col] = Vec3b(255, 255, 255);
             } else {
-                inputImg.at<Vec3b>(row, col)[0] = blackWhite[1][0];
-                inputImg.at<Vec3b>(row, col)[1] = blackWhite[1][1];
-                inputImg.at<Vec3b>(row, col)[2] = blackWhite[1][2];
+                inputImg.ptr<Vec3b>(row)[col] = Vec3b(0, 0, 0);
             }
             index++;
         }

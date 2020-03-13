@@ -19,9 +19,9 @@ int main() {
     Mat inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/0.jpg", IMREAD_COLOR);
     Mat eyeImage = inputImg.clone();
     
-    //去除高光和暗沉
-    IrisCenterLocalizationPreProcess::qualityOptimization(inputImg);
-    imwrite("/Users/xiecun/Documents/Graduation/data/Example/qualityOptimization.jpg", inputImg);
+    //画质优化
+    //IrisCenterLocalizationPreProcess::qualityOptimization(inputImg);
+    //imwrite("/Users/xiecun/Documents/Graduation/data/Example/qualityOptimization.jpg", inputImg);
     //k-means
     IrisCenterLocalizationPreProcess::kmeans(inputImg);
     imwrite("/Users/xiecun/Documents/Graduation/data/Example/kmeans.jpg", inputImg);
