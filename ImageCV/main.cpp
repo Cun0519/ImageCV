@@ -16,7 +16,7 @@ using namespace cv;
 int main() {
     
     //输入图片
-    Mat inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/1.jpg", IMREAD_COLOR);
+    Mat inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/0.jpg", IMREAD_COLOR);
     Mat eyeImage = inputImg.clone();
     
     //去除高光和暗沉
@@ -36,8 +36,9 @@ int main() {
     //通过卷积定位瞳孔中心
     IrisCenterLocator locator;
     Point2i irisCenter = locator.localizeIrisCenter(eyeImage, searchingArea);
-    //Debug::debugDrawPoint(eyeImage, irisCenter);
+    Debug::debugDrawCross(eyeImage, irisCenter);
     //Debug::debugShow(eyeImage);
+    imwrite("/Users/xiecun/Documents/Graduation/data/Example/final.jpg", eyeImage);
     cout << "irisCenter.x: " << irisCenter.x << "\nirisCenter.y: " << irisCenter.y << endl;
     return 0;
 }

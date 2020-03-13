@@ -26,6 +26,20 @@ void Debug::debugDrawPoint(Mat inputImg, Point2i point) {
     inputImg.ptr<Vec3b>(point.y)[point.x][2] = 0;
 }
 
+void Debug::debugDrawCross(Mat inputImg, Point2i point) {
+    int crossLength = 10;
+    for (int x = point.x - crossLength; x < point.x + crossLength; x++) {
+        inputImg.ptr<Vec3b>(point.y)[x][0] = 0;
+        inputImg.ptr<Vec3b>(point.y)[x][1] = 255;
+        inputImg.ptr<Vec3b>(point.y)[x][2] = 0;
+    }
+    for (int y = point.y - crossLength; y < point.y + crossLength; y++) {
+        inputImg.ptr<Vec3b>(y)[point.x][0] = 0;
+        inputImg.ptr<Vec3b>(y)[point.x][1] = 255;
+        inputImg.ptr<Vec3b>(y)[point.x][2] = 0;
+    }
+}
+
 void Debug::debugShow(Mat img) {
     imshow("DeBug", img);
     waitKey(0);

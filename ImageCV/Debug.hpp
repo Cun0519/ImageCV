@@ -25,6 +25,7 @@ public:
     static void debugDrawAre(Mat inputImg, Point2i area[]);
     static void debugDrawPoint(Mat inputImg, Point2i point);
     static void debugShow(Mat img);
+    static void debugDrawCross(Mat inputImg, Point2i point);
 };
 
 #endif /* Debug_hpp */
