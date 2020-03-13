@@ -8,8 +8,8 @@
 
 #include "IrisCenterLocalizationPreProcess.hpp"
 
-//去除高光和暗沉
-void IrisCenterLocalizationPreProcess::removeHighlights(Mat inputImg) {
+//画质优化
+void IrisCenterLocalizationPreProcess::qualityOptimization(Mat inputImg) {
     
     CV_Assert(!inputImg.empty());
     

@@ -25,7 +25,7 @@ using namespace cv;
 
 class IrisCenterLocalizationPreProcess {
 public:
-    static void removeHighlights(Mat inputImg);
+    static void qualityOptimization(Mat inputImg);
     static void kmeans(Mat inputImg);
     static int removeConnectedComponents(Mat inputImg);
     static Point2i getCentroid(Mat inputImg, Point2i searchingArea[]);
