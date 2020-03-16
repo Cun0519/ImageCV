@@ -15,6 +15,12 @@ using namespace cv;
 
 int main() {
     
+    // 基于当前系统的当前日期/时间
+    time_t now = time(0);
+    // 把 now 转换为字符串形式
+    string time = ctime(&now);
+    string name = "/Users/xiecun/Documents/Graduation/data/Example/" + time + ".jpg";
+    
     //输入图片
     Mat inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/0.jpg", IMREAD_COLOR);
     Mat eyeImage = inputImg.clone();
@@ -38,7 +44,7 @@ int main() {
     Point2i irisCenter = locator.localizeIrisCenter(eyeImage, searchingArea);
     Debug::debugDrawCross(eyeImage, irisCenter);
     //Debug::debugShow(eyeImage);
-    imwrite("/Users/xiecun/Documents/Graduation/data/Example/final.jpg", eyeImage);
+    imwrite(name, eyeImage);
     cout << "irisCenter.x: " << irisCenter.x << "\nirisCenter.y: " << irisCenter.y << endl;
     return 0;
 }
