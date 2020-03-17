@@ -88,7 +88,7 @@ namespace cve {
                      CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE );
         
         // Find the convex hull object for each contour
-        std::vector<std::vector<cv::Point2i>> hull(contours.size());
+        std::vector< std::vector<cv::Point2i> > hull(contours.size());
         for( int i = 0; i < contours.size(); i++ )
         {
             cv::convexHull( cv::Mat(contours[i]), hull[i], false );
@@ -100,7 +100,7 @@ namespace cve {
         return resultCanvas;
     }
 
-    std::vector<cv::Point2f> cve::blobMassCenter(const cv::Mat & bwImage) {
+    std::vector<cv::Point2f> blobMassCenter(const cv::Mat & bwImage) {
         std::vector<cv::Point2f> centers;
         
         std::vector<std::vector<cv::Point2i> > contours;

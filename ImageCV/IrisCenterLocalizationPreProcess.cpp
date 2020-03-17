@@ -20,16 +20,16 @@ Point2i IrisCenterLocalizationPreProcess::preProcess(Mat inputImg, Point2i searc
     
     CV_Assert(!inputImg.empty());
     
-    constexpr int iterationLevel = 5;
+    const int iterationLevel = 5;
     cv::Mat1b ratedImage = cve::imageSegmentationViaIterativeKmeans(inputImg, iterationLevel);
     
-    auto maxAreaRatio = 0.025 * ratedImage.cols * ratedImage.cols * CV_PI / ratedImage.size().area();
-    auto minAreaRatio = maxAreaRatio * 0.4;
+    double maxAreaRatio = 0.025 * ratedImage.cols * ratedImage.cols * CV_PI / ratedImage.size().area();
+    double minAreaRatio = maxAreaRatio * 0.4;
     cv::Mat irisArea;
     double currentMinArea = 1e10;
     for (int i = 2; i < iterationLevel; i++) {
         cv::Mat currentLayer = ratedImage >= i;
-        auto areaValue = cv::sum(currentLayer)[0] / 255.0 / ratedImage.size().area();
+        double areaValue = cv::sum(currentLayer)[0] / 255.0 / ratedImage.size().area();
         if (areaValue > minAreaRatio && areaValue < maxAreaRatio && areaValue < currentMinArea) {
             irisArea = currentLayer;
             currentMinArea = areaValue;
