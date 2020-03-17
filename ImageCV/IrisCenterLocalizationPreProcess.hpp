@@ -19,14 +19,16 @@
 #include <opencv2/photo.hpp>
 
 #include "Debug.hpp"
+#include "OpenCVExtensions.h"
 
 using namespace std;
 using namespace cv;
 
 class IrisCenterLocalizationPreProcess {
 public:
+    static Point2i preProcess(Mat inputImg, Point2i searchingArea[]);
     static void qualityOptimization(Mat inputImg);
-    static void kmeans(Mat inputImg);
+    static void iterationKmeans(Mat inputImg);
     static int removeConnectedComponents(Mat inputImg);
     static Point2i getCentroid(Mat inputImg, Point2i searchingArea[]);
 };

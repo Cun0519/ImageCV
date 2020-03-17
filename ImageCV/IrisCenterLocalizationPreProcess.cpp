@@ -15,8 +15,49 @@ void IrisCenterLocalizationPreProcess::qualityOptimization(Mat inputImg) {
 
 }
 
+//preProcess
+Point2i IrisCenterLocalizationPreProcess::preProcess(Mat inputImg, Point2i searchingArea[]) {
+    
+    CV_Assert(!inputImg.empty());
+    
+    constexpr int iterationLevel = 5;
+    cv::Mat1b ratedImage = cve::imageSegmentationViaIterativeKmeans(inputImg, iterationLevel);
+    
+    auto maxAreaRatio = 0.025 * ratedImage.cols * ratedImage.cols * CV_PI / ratedImage.size().area();
+    auto minAreaRatio = maxAreaRatio * 0.4;
+    cv::Mat irisArea;
+    double currentMinArea = 1e10;
+    for (int i = 2; i < iterationLevel; i++) {
+        cv::Mat currentLayer = ratedImage >= i;
+        auto areaValue = cv::sum(currentLayer)[0] / 255.0 / ratedImage.size().area();
+        if (areaValue > minAreaRatio && areaValue < maxAreaRatio && areaValue < currentMinArea) {
+            irisArea = currentLayer;
+            currentMinArea = areaValue;
+        }
+    }
+    if (irisArea.empty()) {
+        irisArea = ratedImage == 3;
+    }
+    
+    irisArea = cve::removeSmallBlobsExceptLargest(irisArea);
+    irisArea = cve::fillConvexHulls(irisArea);
+    cv::Point2f massCenter = cve::blobMassCenter(irisArea)[0];
+    
+    //计算瞳孔中心搜索区域的搜索长度
+    double searchingLength = sqrt(inputImg.cols);
+    searchingArea[0].x = round(massCenter.x - searchingLength);
+    searchingArea[0].y = round(massCenter.y - searchingLength);
+    searchingArea[1].x = round(massCenter.x + searchingLength);
+    searchingArea[1].y = round(massCenter.y + searchingLength);
+    
+    //Debug::debugDrawAre(inputImg, searchingArea);
+    //Debug::debugShow(inputImg);
+    
+    return massCenter;
+}
+
 //k-means
-void IrisCenterLocalizationPreProcess::kmeans(Mat inputImg) {
+void IrisCenterLocalizationPreProcess::iterationKmeans(Mat inputImg) {
 
     CV_Assert(!inputImg.empty());
 
@@ -47,7 +88,7 @@ void IrisCenterLocalizationPreProcess::kmeans(Mat inputImg) {
     int attempts = 3;
     int flags = KMEANS_RANDOM_CENTERS;
 
-    ::kmeans(data, k, bestLabels, criteria, attempts, flags);
+    kmeans(data, k, bestLabels, criteria, attempts, flags);
 
     //聚类后每簇的bgr值之和
     int rgbSum[k];

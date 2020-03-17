@@ -22,22 +22,11 @@ int main() {
     string name = "/Users/xiecun/Documents/Graduation/data/Example/" + time + ".jpg";
     
     //输入图片
-    Mat inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/0.jpg", IMREAD_COLOR);
+    Mat inputImg = imread("/Users/xiecun/Documents/Graduation/data/Example/1.jpg", IMREAD_COLOR);
     Mat eyeImage = inputImg.clone();
     
-    //画质优化
-    //IrisCenterLocalizationPreProcess::qualityOptimization(inputImg);
-    //imwrite("/Users/xiecun/Documents/Graduation/data/Example/qualityOptimization.jpg", inputImg);
-    //k-means
-    IrisCenterLocalizationPreProcess::kmeans(inputImg);
-    imwrite("/Users/xiecun/Documents/Graduation/data/Example/kmeans.jpg", inputImg);
-    //去除连通区域
-    IrisCenterLocalizationPreProcess::removeConnectedComponents(inputImg);
-    imwrite("/Users/xiecun/Documents/Graduation/data/Example/removeConnectedComponents.jpg", inputImg);
-    //填充凸包获得质心
     Point2i searchingArea[2];
-    IrisCenterLocalizationPreProcess::getCentroid(inputImg, searchingArea);
-    imwrite("/Users/xiecun/Documents/Graduation/data/Example/getCentroid.jpg", inputImg);
+    Point2i massCenter = IrisCenterLocalizationPreProcess::preProcess(inputImg, searchingArea);
     
     //通过卷积定位瞳孔中心
     IrisCenterLocator locator;
