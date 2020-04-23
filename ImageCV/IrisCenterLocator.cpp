@@ -68,7 +68,7 @@ Point2i IrisCenterLocator::convolutionCore(Mat grayImage, vector<Mat> templates,
         bwImage.convertTo(bwImage, CV_8UC1);
         bwImage = cve::removeSmallBlobsExceptLargest(bwImage);
         cv::Mat nonZeroCoordinates;
-        findNonZero(bwImage, nonZeroCoordinates);
+        cv::findNonZero(bwImage, nonZeroCoordinates);
         cv::Point2f enclosingCenter;
         float enclosingRadius;
         cv::minEnclosingCircle(nonZeroCoordinates, enclosingCenter, enclosingRadius);
